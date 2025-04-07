@@ -1,15 +1,11 @@
-from machine import Pin, ADC
 import network
 import socket
+from pins import pins
 
 ap = network.WLAN (network.AP_IF)
 ap.active (True)
 ap.config (essid = 'Tony')
 ap.config (authmode = 3, password = '12345687')
-
-p36 = ADC(Pin(36), atten=ADC.ATTN_11DB)
-p36.width(ADC.WIDTH_12BIT)
-pins = [p36]
 
 html_path = '/index.html'
 with open(html_path, 'r') as f:
@@ -32,7 +28,7 @@ while True:
         #print(line)
         if not line or line == b'\r\n':
             break
-    rows = ['<tr><td>%s</td><td>%d</td></tr>' % (str(p), p.read()) for p in pins]
+    rows = ['<tr><td>%s</td><td>%s</td><td>%s</td></tr>' % (n, p.name, p.value()) for n,p in pins.items()]
     response = html % '\n'.join(rows)
     cl.send(response)
     cl.close()
