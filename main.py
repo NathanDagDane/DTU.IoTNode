@@ -23,12 +23,21 @@ while True:
     cl, addr = s.accept()
     print('client connected from', addr)
     cl_file = cl.makefile('rwb', 0)
+    request_line = cl_file.readline()
+    print("Request:", request_line)
+    method, path, _ = request_line.decode().split()
     while True:
         line = cl_file.readline()
-        #print(line)
         if not line or line == b'\r\n':
             break
-    rows = ['<tr><td>%s</td><td>%s</td><td>%s</td></tr>' % (n, p.name, p.value()) for n,p in pins.items()]
-    response = html % '\n'.join(rows)
-    cl.send(response)
+
+    if path == '/data': # Endpoint for JSON data
+        import ujson
+        cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
+        data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in pins.items()]
+        cl.send(ujson.dumps(data))
+    else: # Default endpoint for HTML
+        cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n")
+        cl.send(html)
+
     cl.close()
