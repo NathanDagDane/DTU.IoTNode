@@ -6,20 +6,90 @@
     <style>
         body {
             background-color: linen;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            font-family: sans-serif;
         }
 
         h1 {
             color: maroon;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 20px auto;
         }
+
+        table {
+            margin: 20px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 8px 16px;
+            border: 1px solid #000;
+        }
+
+        .gauge-ui {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin: 20px;
+}
+
+        /* Circle gauge */
+        .gauge-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 20px;
+        }
+
+        .gauge-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid maroon;
+            position: relative;
+        }
+
+        .gauge-marker {
+            width: 5px;
+            border-radius: 5px;
+            height: 70px;
+            background-color: maroon;
+            position: absolute;
+            top: 5px;
+            left: calc(50% - 5px);
+            transform-origin: bottom center;
+            transform: rotate(calc(calc(300deg * var(--Potentiometer-val, 0)) - 150deg));
+            transition: transform 0.4s ease-out;
+        }
+
+        /* Button Visualization */
+        .button-visual {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            transition: all 0.2s ease-out;
+            background-color: hsl(calc(0 + (1 - var(--Button-val, 0)) * 60), 70%, 50%);
+            box-shadow: 0 calc((1 - var(--Button-val, 0)) * 6px) 0 #555;
+            transform: translateY(calc(var(--Button-val, 0) * 6px));
+}
     </style>
 </head>
 
 <body>
     <h1>ESP32 Pins :)</h1>
-    <table border="1">
+
+    <div class="gauge-ui">
+        <div class="gauge-container">
+            <div class="gauge-circle">
+                <div class="gauge-marker"></div>
+            </div>
+        </div>
+        <div class="button-visual"></div>
+    </div>
+
+    <table>
         <tr>
             <th>Name</th>
             <th>Pin</th>
@@ -27,6 +97,7 @@
         </tr>
         <tbody id="pinTableBody"></tbody>
     </table>
+
     <script>
         async function fetchData() {
             try {
@@ -34,17 +105,22 @@
                 const data = await response.json();
                 const tbody = document.getElementById('pinTableBody');
                 tbody.innerHTML = '';
+
                 data.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `<td>${row.name}</td><td>${row.pin}</td><td>${row.value.toFixed(2)}</td>`;
                     tbody.appendChild(tr);
+
+                    // Set CSS variable for each pin name
+                    const variableName = `--${row.name}-val`;
+                    document.documentElement.style.setProperty(variableName, row.value);
                 });
             } catch (error) {
                 console.error('Fetch error:', error);
             }
         }
 
-        setInterval(fetchData, 200); // Fetch every 2 seconds
+        setInterval(fetchData, 200); // Update every 200ms
         window.onload = fetchData;
     </script>
 </body>

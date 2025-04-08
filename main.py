@@ -1,5 +1,6 @@
 import network
 import socket
+import ujson
 from pins import pins
 
 ap = network.WLAN (network.AP_IF)
@@ -32,7 +33,6 @@ while True:
             break
 
     if path == '/data': # Endpoint for JSON data
-        import ujson
         cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
         data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in pins.items()]
         cl.send(ujson.dumps(data))
