@@ -3,65 +3,91 @@
 
 <head>
     <title>ESP32 Pins</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+
         body {
-            background-color: linen;
+            --colour-back: linen;
+            --colour-acc-h: 0;
+            --colour-acc-s: 100%;
+            --colour-acc-l: 40%;
+            --colour-acc: hsl(var(--colour-acc-h), var(--colour-acc-s), var(--colour-acc-l));
+            --colour-acc-shadow: hsl(0, 100%, 25%);
+
+            background-color: var(--colour-back);
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-family: sans-serif;
+            font-family: Helvetica, sans-serif;
         }
 
         h1 {
-            color: maroon;
+            color: var(--colour-acc);
             margin: 20px auto;
         }
 
         table {
-            margin: 20px;
             border-collapse: collapse;
-        }
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 320px;
+            width: 100%;
+            margin-top: 15px;
+            position: relative;
+            box-shadow: 0 6px 0 #00000020;
+            transition: 0.25s;
 
-        th,
-        td {
-            padding: 8px 16px;
-            border: 1px solid #000;
-        }
+            td,th { padding-left:8px}
+            tr th {
+                height:60px;
+                background: var(--colour-acc);
+                color:var(--colour-back);
+                font-size:18px;
+            }
+            tr { height:48px; border-bottom:1px solid #00000014;
+                &:last-child  { border:0; }
+            }
+            td,th { text-align:center;
+                &.l { text-align:right }
+                &.c { text-align:center }
+                &.r { text-align:center }
+            }
+        } table:hover{ transform: translateY(3px); box-shadow: 0 3px 0 #00000020;}
 
         .gauge-ui {
             display: flex;
             align-items: center;
             gap: 40px;
             margin: 20px;
-}
-
-        /* Circle gauge */
+        }
         .gauge-container {
             position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--colour-acc-shadow);
+            box-shadow: 0 10px 0 var(--colour-acc-shadow);
         }
-
         .gauge-circle {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 5px solid maroon;
+            background: var(--colour-acc);
             position: relative;
-        }
-
-        .gauge-marker {
-            width: 5px;
-            border-radius: 5px;
-            height: 70px;
-            background-color: maroon;
-            position: absolute;
-            top: 5px;
-            left: calc(50% - 5px);
-            transform-origin: bottom center;
+            box-shadow: inset 0 0 7px 3px var(--colour-acc-shadow);
             transform: rotate(calc(calc(300deg * var(--Potentiometer-val, 0)) - 150deg));
             transition: transform 0.4s ease-out;
+        }
+        .gauge-marker {
+            width: 8px;
+            height: 25px;
+            border-radius: 8px;
+            background-color: #ffffffc7;
+            position: absolute;
+            top: 8px;
+            left: calc(50% - 4px);
+            transform-origin: bottom center;
         }
 
         /* Button Visualization */
@@ -69,10 +95,10 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            transition: all 0.2s ease-out;
-            background-color: hsl(calc(0 + (1 - var(--Button-val, 0)) * 60), 70%, 50%);
-            box-shadow: 0 calc((1 - var(--Button-val, 0)) * 6px) 0 #555;
-            transform: translateY(calc(var(--Button-val, 0) * 6px));
+            transition: all 0.1s ease-out;
+            background-color: hsl(var(--colour-acc-h), var(--colour-acc-s), calc(calc(1 - calc(var(--Button-val, 0)) * 0.2) * var(--colour-acc-l)));
+            box-shadow: 0 calc((1 - var(--Button-val, 0)) * 7px) 0 var(--colour-acc-shadow), inset 0px 0px 5px 1px var(--colour-acc-shadow);
+            transform: translateY(calc(var(--Button-val, 0) * 7px));
 }
     </style>
 </head>
@@ -95,7 +121,9 @@
             <th>Pin</th>
             <th>Value</th>
         </tr>
-        <tbody id="pinTableBody"></tbody>
+        <tbody id="pinTableBody">
+            <tr><td></td><td>Fetching...</td><td></td></tr>
+        </tbody>
     </table>
 
     <script>
