@@ -1,7 +1,18 @@
 import network
 import socket
 import ujson
+import random
+from machine import Pin
 from pins import pins
+
+
+def handle_button(pin):
+    pins['LED-Green'].set(random.uniform(0, 1))
+    pins['LED-Orange'].set(random.uniform(0, 1))
+    pins['LED-Red'].set(random.uniform(0, 1))
+
+pins['Button'].pin.irq(trigger=Pin.IRQ_RISING, handler=handle_button)
+
 
 ap = network.WLAN (network.AP_IF)
 ap.active (True)

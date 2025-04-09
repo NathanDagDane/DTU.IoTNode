@@ -21,14 +21,22 @@ class pin:
         if self.pwm:
             return (self.pin.duty() if not self.pwm_invert else 1023-self.pin.duty())/1023
         return self.pin.value()
+    def set(self, value):
+        if self.pwm:
+            duty = int((value if not self.pwm_invert else 1-value)*1023)
+            self.pin.duty(duty)
+        elif self.adc:
+            raise ValueError("Cannot set value for ADC pin")
+        else:
+            self.pin.value(value)
 
 pins = OrderedDict([
     ('Button'        , pin(4)),
     ('Potentiometer' , pin(36, adc = True)),
-    ('LED Green'     , pin(32, pwm = True)),
-    ('LED Orange'    , pin(15, pwm = True)),
-    ('LED Red'       , pin(33, pwm = True)),
-    ('RGB Red'       , pin(13, pwm = True, pwm_invert = True)),
-    ('RGB Green'     , pin(12, pwm = True, pwm_invert = True)),
-    ('RGB Blue'      , pin(22, pwm = True, pwm_invert = True)),
+    ('LED-Green'     , pin(32, pwm = True)),
+    ('LED-Orange'    , pin(15, pwm = True)),
+    ('LED-Red'       , pin(33, pwm = True)),
+    ('RGB-Red'       , pin(13, pwm = True, pwm_invert = True)),
+    ('RGB-Green'     , pin(12, pwm = True, pwm_invert = True)),
+    ('RGB-Blue'      , pin(22, pwm = True, pwm_invert = True)),
     ('Thermometer'   , MCP9808(I2C(0, scl=Pin(22), sda=Pin(23))))])
