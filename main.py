@@ -1,5 +1,6 @@
 import network
 import socket
+import ujson
 from pins import pins
 
 ap = network.WLAN (network.AP_IF)
@@ -23,12 +24,18 @@ while True:
     cl, addr = s.accept()
     print('client connected from', addr)
     cl_file = cl.makefile('rwb', 0)
+    req = cl_file.readline()
+    method, path, _ = req.decode().split()
+
     while True:
         line = cl_file.readline()
         #print(line)
         if not line or line == b'\r\n':
             break
-    rows = ['<tr><td>%s</td><td>%s</td><td>%s</td></tr>' % (n, p.name, p.value()) for n,p in pins.items()]
-    response = html % '\n'.join(rows)
-    cl.send(response)
+    if path == '/data':
+        cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
+        data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in pins.items()]
+        cl.send(ujson.dumps(data))
+    else:
+        cl.send(html)
     cl.close()

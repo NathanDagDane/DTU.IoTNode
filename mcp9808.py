@@ -24,7 +24,3 @@ class MCP9808:
         if raw & 0x1000:
             temp_c -= 256
         return temp_c
-
-    @property
-    def temperature(self) -> float:
-        return self.read_temperature()
