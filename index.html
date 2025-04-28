@@ -8,6 +8,7 @@
 
         body {
             --colour-back: #333;
+            --pot-glow: calc(clamp(0, calc(var(--Potentiometer-val, 0) - 0.35), 1) * 100%);
 
             background-color: var(--colour-back);
             display: flex; flex-direction: column; align-items: center;
@@ -45,7 +46,7 @@
               background: #ffffff05; transform: rotate(-23deg) translateY(-360px);
         }
 
-        .gauge-container { --pot-glow: calc(clamp(0, calc(var(--Potentiometer-val, 0) - 0.35), 1) * 100%); --pot-shine: clamp(0, calc(var(--Potentiometer-val, 0) - 0.4), 1);
+        .gauge-container {--pot-shine: clamp(0, calc(var(--Potentiometer-val, 0) - 0.4), 1);
             position: relative; margin: 20px;
             width: 120px; height: 120px;
             border-radius: 50%;
@@ -114,6 +115,22 @@
             box-shadow: 0 7px 3px var(--led-col), 0 3px 0 var(--led-col), 0 0 16px hsl(from var(--led-col) h s 50% / var(--led-l)),
                         0 5px 0 3px #111111e1, 0 9px 16px #757575bf, 0 -3px 25px #111111, inset 2px 4px 1px -2px #fff4;
         }
+        button{
+            border: 2px solid #00000081;
+            width: 63px; height: 32px;
+            border-radius: 8px;
+            background: var(--colour-back);
+            box-shadow: 0 0 0 3px var(--colour-back), 0 -8px 12px #7575754a, 0 12px 30px #191919;
+            color: hsl(from var(--colour-acc) h s calc(82% * var(--Potentiometer-val, 0)) / calc(calc(var(--Potentiometer-val, 0) * 90%) + 30%));
+            text-shadow: 0 0 12px hsl(from var(--colour-acc) h s l / var(--pot-glow));
+            transition: 0.3s, background-color 0.1s ease-out;
+        } button:hover{
+            color: #fff;
+            text-shadow: 0 0 12px hsl(from var(--colour-acc) h s l / 1);
+        } button:active{
+            background-color: hsl(from var(--colour-back) h s calc(l * 0.9));
+        }
+
     </style>
 </head>
 
@@ -141,6 +158,13 @@
         <input type="range" id="saturation" min="0" max="100" value="100">
     </label>
 
+    <div style="display: flex; align-items: center; margin-top: 20px; gap: 12px;">
+        <button onclick="live = !live" style="width: 42px;">Live</button>
+        <button onclick="fetchData('/data')">All</button>
+        <button onclick="fetchData('/leds')">LEDs</button>
+        <button onclick="fetchData('/pot')">Gauge</button>
+    </div>
+
     <table>
         <tr>
             <th class="l">Name</th>
@@ -155,10 +179,11 @@
     <script>
         const hueSlider = document.getElementById("hue");
         const saturationSlider = document.getElementById("saturation");
+        let live = true;
 
-        async function fetchData() {
+        async function fetchData(endpoint) {
             try {
-                const response = await fetch('/data');
+                const response = await fetch(endpoint);
                 const data = await response.json();
                 const tbody = document.getElementById('pinTableBody');
                 tbody.innerHTML = '';
@@ -177,7 +202,12 @@
             }
         }
 
-        setInterval(fetchData, 200); // Update every 200ms
+        async function liveFetch() {
+            if (!live) return;
+            await fetchData('/data');
+        }
+
+        setInterval(liveFetch, 200); // Update every 200ms
         window.onload = fetchData;
 
 
