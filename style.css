@@ -1,0 +1,124 @@
+body {
+    --colour-back: #333;
+    --pot-glow: calc(clamp(0, calc(var(--Potentiometer-val, 0) - 0.35), 1) * 100%);
+
+    background-color: var(--colour-back);
+    display: flex; flex-direction: column; align-items: center;
+    font-family: Helvetica, sans-serif; color: #fff;
+}
+
+h1 {
+    color: #fff;
+    margin: 20px auto;
+}
+
+table {
+    width: 100%; max-width: 320px;
+    margin-top: 40px; margin-bottom: 30px; position: relative; border-collapse: collapse;
+    border-radius: 8px; overflow: hidden;
+    background: #141414; color: #fffa;
+    box-shadow: 0 9px 16px #75757596, 0 -3px 25px #111111, inset 2px 4px 20px -2px #000f;
+    transition: 0.25s;
+    font-family: monospace;
+
+    td,th { padding-left:8px}
+    tr th {
+        height:60px; transition: 0.1s;
+        background: #ffffff08;
+        color:#fffc; font-size:18px;
+    }
+    tr { height:48px; border-bottom:1px solid #00000014;
+        &:last-child  { border:0; }
+    }
+    td,th { text-align:center;
+        &.l { text-align:right }  &.c { text-align:center }  &.r { text-align:center }
+    }
+} table:hover{ tr th {color: var(--colour-acc); text-shadow: 0 0 8px hsl(from var(--colour-acc) h s l / 0.4);}}
+table::after { content: ''; position: absolute; width: 400px; height: 400px;  top: 0; left: 0;
+    background: #ffffff05; transform: rotate(-23deg) translateY(-360px);
+}
+
+.gauge-container {--pot-shine: clamp(0, calc(var(--Potentiometer-val, 0) - 0.4), 1);
+    position: relative; margin: 20px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(0deg, #525252 0%, #373737 100%); transition: 0.4s;
+    box-shadow: inset 0 0 10px hsl(from var(--colour-acc) h s l / calc(var(--pot-shine) * 80%)),
+    0 4px 1px 2px hsl(from var(--colour-acc) h calc(calc(var(--pot-shine)*0.8) * s) calc(17% + calc(var(--pot-shine) * 16%))),
+    0 -14px 20px #757575bf, 0 20px 35px #111111, inset 0 5px 6px #979797e1, inset 0 -5px 6px #242424, 0 5px 0 4px #111111e1;
+} .gauge-container::after {
+      content: ''; position: absolute; transition: 0.4s;
+      top: 55%; left: 50%; transform: translate(-50%, -50%);
+      width: 138%; height: 138%;
+      border: 2px solid hsl(from var(--colour-acc) h s calc(82% * var(--Potentiometer-val, 0)) / calc(calc(var(--Potentiometer-val, 0) * 90%) + 30%)); border-radius: 50%;
+      box-shadow: 0 0 16px hsl(from var(--colour-acc) h s l / var(--pot-glow)),
+      inset 0 0 16px hsl(from var(--colour-acc) h s l / var(--pot-glow));
+  }
+.gauge-circle {
+    width: 100%; height: 100%;
+    transform: rotate(calc(calc(300deg * var(--Potentiometer-val, 0)) - 150deg));
+    transition: transform 0.4s ease-out;
+}
+.gauge-circle::after {
+    content: ''; width: 6px; height: 18px;
+    top: 12px; left: calc(50% - 3px); position: absolute;
+    border-radius: 100px;
+    background-color: hsl(from var(--colour-acc) h s 95%);
+    box-shadow: 0 0 12px 1px var(--colour-acc);
+}
+
+/* Button Visualization */
+.button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px 0 hsl(from var(--colour-acc) h s l / calc(var(--Button-val, 0) * 100%)),
+    0 0 0 2px hsla(0, 0%, 100%, calc(var(--Button-val, 0) * 100%)),
+    0 -13px 20px #757575bf, 0 15px 35px #111111, 0 0 0 4px #111111e1;
+} .button::after { content: ''; width: 60px; height: 60px; position: absolute;
+      background: linear-gradient(0deg, #525252 0%, #373737 100%);
+      border-radius: 50%;
+      box-shadow: inset 0 0 8px 0 hsl(from var(--colour-acc) h s l / calc(var(--Button-val, 0) * 100%)),
+      0 calc(calc(1 - var(--Button-val, 0)) * 4px) 1px 2px hsla(0, 0%, 18%, calc(calc(1 - var(--Button-val, 0)) * 100%)),
+      inset 0 5px 6px #888, inset 0 -5px 6px #242424;
+      transform: translateY(calc(calc(1 - var(--Button-val, 0)) * -5px));
+      transition: all 0.1s ease-out;
+  }
+
+input[type="range"]{
+    margin: 14px auto; height: 3px; width: 250px; color: red;
+    -webkit-appearance: none; appearance: none;
+    background: #00000081; border: 8px var(--colour-back) solid; border-radius: 100px;
+    box-shadow: 0 -8px 15px #7575759a, 0 12px 35px #111111;
+}input[type="range"]::-webkit-slider-thumb {
+     width: 35px; height: 40px; border-radius: 6px;
+     -webkit-appearance: none; appearance: none;
+     cursor: grabbing;
+     background: linear-gradient(90deg, #525252 0%, #373737 39%, #525252 40%, #525252 60%, #373737 61%, #525252 100%);
+     box-shadow: inset 0 2px 3px -1px #fff3, inset 0 -2px 3px #222222, 0 2px 7px #0000007c;
+ }
+
+.led{
+    --led-h: 0;
+    --led-l: 0;
+    --led-col: hsl(var(--led-h), 100%, calc(20% + calc(var(--led-l) * 45%)));
+    margin: 7px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--led-col);
+    box-shadow: 0 7px 3px var(--led-col), 0 3px 0 var(--led-col), 0 0 16px hsl(from var(--led-col) h s 50% / var(--led-l)),
+    0 5px 0 3px #111111e1, 0 9px 16px #757575bf, 0 -3px 25px #111111, inset 2px 4px 1px -2px #fff4;
+}
+.click-button{
+    border: 2px solid #00000081;
+    width: 63px; height: 32px;
+    border-radius: 8px;
+    background: var(--colour-back);
+    box-shadow: 0 0 0 3px var(--colour-back), 0 -8px 12px #7575754a, 0 12px 30px #191919;
+    color: hsl(from var(--colour-acc) h s calc(82% * var(--Potentiometer-val, 0)) / calc(calc(var(--Potentiometer-val, 0) * 90%) + 30%));
+    text-shadow: 0 0 12px hsl(from var(--colour-acc) h s l / var(--pot-glow));
+    transition: 0.3s, background-color 0.1s ease-out;
+} .click-button:hover{
+      color: #fff;
+      text-shadow: 0 0 12px hsl(from var(--colour-acc) h s l / 1);
+  } .click-button:active{
+        background-color: hsl(from var(--colour-back) h s calc(l * 0.9));
+    }
