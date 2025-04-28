@@ -1,6 +1,7 @@
 body {
     --colour-back: #333;
     --pot-glow: calc(clamp(0, calc(var(--Potentiometer-val, 0) - 0.35), 1) * 100%);
+    --colour-acc: hsl(0, 100%, 50%);
 
     background-color: var(--colour-back);
     display: flex; flex-direction: column; align-items: center;
@@ -117,8 +118,8 @@ input[type="range"]{
     text-shadow: 0 0 12px hsl(from var(--colour-acc) h s l / var(--pot-glow));
     transition: 0.3s, background-color 0.1s ease-out;
 } .click-button:hover{
-      color: #fff;
-      text-shadow: 0 0 12px hsl(from var(--colour-acc) h s l / 1);
-  } .click-button:active{
-        background-color: hsl(from var(--colour-back) h s calc(l * 0.9));
-    }
+    color: #fff;
+    text-shadow: 0 0 12px hsl(from var(--colour-acc) h s l / 1);
+} .click-button:active{
+    background-color: hsl(from var(--colour-back) h s calc(l * 0.9));
+}

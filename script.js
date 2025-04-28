@@ -50,8 +50,8 @@ function updateColor() {
     const saturation = parseInt(saturationSlider.value, 10);
     const brightness = 50;
 
-    const [r, g, b] = hsvToRgb(hue, saturation, brightness);
-    const rgb = `rgb(${r}, ${g}, ${b})`;
+    //const [r, g, b] = hsvToRgb(hue, saturation, brightness);
+    //const rgb = `rgb(${r}, ${g}, ${b})`;
 
     document.body.style.setProperty('--colour-acc', 'hsl(' + hue + ', ' + saturation + '%, 50%)');
 }
