@@ -3,8 +3,9 @@ from machine import Pin, ADC, I2C, PWM
 from mcp9808 import MCP9808
 
 class pin:
-    def __init__(self, index: int, adc: bool = False, pwm: bool = False, pwm_invert: bool = False):
+    def __init__(self, index: int, type: string, adc: bool = False, pwm: bool = False, pwm_invert: bool = False):
         self.pin = Pin(index)
+        self.type = type
         self.adc = adc
         self.pwm = pwm
         self.pwm_invert = pwm_invert
@@ -31,12 +32,12 @@ class pin:
             self.pin.value(value)
 
 pins = OrderedDict([
-    ('Button'        , pin(4)),
-    ('Potentiometer' , pin(36, adc = True)),
-    ('LED-Green'     , pin(32, pwm = True)),
-    ('LED-Orange'    , pin(15, pwm = True)),
-    ('LED-Red'       , pin(33, pwm = True)),
-    ('RGB-Red'       , pin(13, pwm = True, pwm_invert = True)),
-    ('RGB-Green'     , pin(12, pwm = True, pwm_invert = True)),
-    ('RGB-Blue'      , pin(22, pwm = True, pwm_invert = True)),
+    ('Button'        , pin(4, 'button')),
+    ('Potentiometer' , pin(36, 'input', adc = True)),
+    ('LED-Green'     , pin(32, 'led', pwm = True)),
+    ('LED-Orange'    , pin(15, 'led', pwm = True)),
+    ('LED-Red'       , pin(33, 'led', pwm = True)),
+    ('RGB-Red'       , pin(13, 'led', pwm = True, pwm_invert = True)),
+    ('RGB-Green'     , pin(12, 'led', pwm = True, pwm_invert = True)),
+    ('RGB-Blue'      , pin(22, 'led', pwm = True, pwm_invert = True)),
     ('Thermometer'   , MCP9808(I2C(0, scl=Pin(22), sda=Pin(23))))])

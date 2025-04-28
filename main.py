@@ -49,21 +49,22 @@ while True:
                 cl.send(f.read())
         except:
             cl.send(b"HTTP/1.0 404 NO SUCH FILE\r\n\r\n")
+    elif path[:5] == "/data":
+        path = path[6:]
+        if path == '':
+            cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
+            data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in pins.items()]
+            cl.send(ujson.dumps(data))
+        else:
+            cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
+            print(path[:-1])
+            data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in filter(lambda x: x[1].type == path[:-1], pins.items())]
+            cl.send(ujson.dumps(data))
     elif path[:4] == "/set":
-            var = 1
-    elif path[:1] == "/":
-        if path[1:] == 'data':
-            cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
-            data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in pins.items()]
-            cl.send(ujson.dumps(data))
-        elif path[1:] == 'leds':
-            cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
-            data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in pins.items()]
-            cl.send(ujson.dumps(data))
-        elif path[1:] == 'pot':
-            var = 1
-        else: # Default endpoint for HTML
-            cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n")
-            cl.send(html)
+            path = path[6:]
+            # Set stuff
+    else: # Default endpoint for HTML
+        cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n")
+        cl.send(html)
 
     cl.close()

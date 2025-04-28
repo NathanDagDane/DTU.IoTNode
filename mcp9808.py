@@ -10,6 +10,7 @@ class MCP9808:
         self.i2c = i2c
         self.address = address
         self.name = "---"
+        self.type = 'input'
 
     def value(self) -> float:
         # Read 2 bytes from the temperature register.
