@@ -16,9 +16,9 @@
         </div>
         <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
             <div style="display: flex;">
-                <button onclick="setState('/set/LED-Green/0')" class="led" style="--led-h: 130; --led-l: var(--LED-Green-val, 0);"></button>
-                <button onclick="setState('/set/LED-Orange/0.5')" class="led" style="--led-h: 40; --led-l: var(--LED-Orange-val, 0);"></button>
-                <button onclick="setState('/set/LED-Red/1')" class="led" style="--led-l: var(--LED-Red-val, 0);"></button>
+                <button onclick="setState('LED-Green/0')" class="led" style="--led-h: 130; --led-l: var(--LED-Green-val, 0);"></button>
+                <button onclick="setState('LED-Orange/0.5')" class="led" style="--led-h: 40; --led-l: var(--LED-Orange-val, 0);"></button>
+                <button onclick="setState('LED-Red/1')" class="led" style="--led-l: var(--LED-Red-val, 0);"></button>
             </div>
             <div class="button"></div>
         </div>
@@ -32,7 +32,7 @@
     </label>
 
     <div style="display: flex; align-items: center; margin-top: 20px; gap: 12px;">
-        <button class="click-button" onclick="live = !live" style="width: 42px;">Live</button>
+        <button class="click-button" onclick="toggleLive()" style="width: 42px;">Live</button>
         <button class="click-button" onclick="fetchData('/data')">All</button>
         <button class="click-button" onclick="fetchData('/data/leds')">LEDs</button>
         <button class="click-button" onclick="fetchData('/data/inputs')">Inputs</button>

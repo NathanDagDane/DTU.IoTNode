@@ -37,7 +37,7 @@ pins = OrderedDict([
     ('LED-Green'     , pin(32, 'led', pwm = True)),
     ('LED-Orange'    , pin(15, 'led', pwm = True)),
     ('LED-Red'       , pin(33, 'led', pwm = True)),
-    ('RGB-Red'       , pin(13, 'led', pwm = True, pwm_invert = True)),
+    ('RGB-Red'       , pin(27, 'led', pwm = True, pwm_invert = True)),
     ('RGB-Green'     , pin(12, 'led', pwm = True, pwm_invert = True)),
-    ('RGB-Blue'      , pin(22, 'led', pwm = True, pwm_invert = True)),
+    ('RGB-Blue'      , pin(13, 'led', pwm = True, pwm_invert = True)),
     ('Thermometer'   , MCP9808(I2C(0, scl=Pin(22), sda=Pin(23))))])

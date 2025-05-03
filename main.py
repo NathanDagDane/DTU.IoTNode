@@ -5,14 +5,12 @@ import random
 from machine import Pin
 from pins import pins
 
-
 def handle_button(pin):
     pins['LED-Green'].set(random.uniform(0, 1))
     pins['LED-Orange'].set(random.uniform(0, 1))
     pins['LED-Red'].set(random.uniform(0, 1))
 
 pins['Button'].pin.irq(trigger=Pin.IRQ_RISING, handler=handle_button)
-
 
 ap = network.WLAN (network.AP_IF)
 ap.active (True)
@@ -37,33 +35,33 @@ while True:
     cl_file = cl.makefile('rwb', 0)
     request_line = cl_file.readline()
     print("Request:", request_line)
-    method, path, _ = request_line.decode().split()
+    _, path, _ = request_line.decode().split()
+
     while True:
         line = cl_file.readline()
         if not line or line == b'\r\n':
             break
 
-    if path[:5] == "/data":
+    if path[:5] == "/data": # Request for data
         path = path[6:]
-        if path == '':
+        if path == '': # Request for all data
             cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
             data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in pins.items()]
             cl.send(ujson.dumps(data))
-        else:
+        else: # Request for specific data
             cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
             print(path[:-1])
             data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in filter(lambda x: x[1].type == path[:-1], pins.items())]
             cl.send(ujson.dumps(data))
-    elif path[:4] == "/set":
+    elif path[:4] == "/set": # Request to set a pin value
             path = path[5:]
-            # example path at this point (⁠ LED-Green/0 ⁠)
             device, value = path.split('/')
             if device in pins:
-                pins[device].set(float(value))  # Turn ON
+                pins[device].set(float(value))
                 cl.send(b"HTTP/1.0 200 OK\r\n\r\n")
             else:
                 cl.send(b"HTTP/1.0 404 NO SUCH DEVICE\r\n\r\n")
-    elif '.' in path:
+    elif '.' in path: # Request for a file
         try:
             with open(path, 'r') as f:
                 cl.send(f.read())
