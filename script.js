@@ -24,7 +24,7 @@ async function fetchData(endpoint) {
 }
 
 async function setState(state) {
-    fetch(state);
+    const response = await fetch(state);
 }
 
 async function liveFetch() {
@@ -48,7 +48,7 @@ function toggleLive() {
 function updateColor() {
     const hue = parseInt(hueSlider.value, 10);
     const saturation = parseInt(saturationSlider.value, 10);
-    const brightness = 50;
+    const brightness = 50
 
     //const [r, g, b] = hsvToRgb(hue, saturation, brightness);
     //const rgb = `rgb(${r}, ${g}, ${b})`;

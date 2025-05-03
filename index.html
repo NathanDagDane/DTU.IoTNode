@@ -16,9 +16,9 @@
         </div>
         <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
             <div style="display: flex;">
-                <div class="led" style="--led-h: 130; --led-l: var(--LED-Green-val, 0);"></div>
-                <div class="led" style="--led-h: 40; --led-l: var(--LED-Orange-val, 0);"></div>
-                <div class="led" style="--led-l: var(--LED-Red-val, 0);"></div>
+                <button onclick="setState('/set/LED-Green/0')" class="led" style="--led-h: 130; --led-l: var(--LED-Green-val, 0);"></button>
+                <button onclick="setState('/set/LED-Orange/0.5')" class="led" style="--led-h: 40; --led-l: var(--LED-Orange-val, 0);"></button>
+                <button onclick="setState('/set/LED-Red/1')" class="led" style="--led-l: var(--LED-Red-val, 0);"></button>
             </div>
             <div class="button"></div>
         </div>

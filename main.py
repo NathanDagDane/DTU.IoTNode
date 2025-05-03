@@ -43,13 +43,7 @@ while True:
         if not line or line == b'\r\n':
             break
 
-    if '.' in path:
-        try:
-            with open(path, 'r') as f:
-                cl.send(f.read())
-        except:
-            cl.send(b"HTTP/1.0 404 NO SUCH FILE\r\n\r\n")
-    elif path[:5] == "/data":
+    if path[:5] == "/data":
         path = path[6:]
         if path == '':
             cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n")
@@ -61,8 +55,20 @@ while True:
             data = [{'name': n, 'pin': p.name, 'value': p.value()} for n, p in filter(lambda x: x[1].type == path[:-1], pins.items())]
             cl.send(ujson.dumps(data))
     elif path[:4] == "/set":
-            path = path[6:]
-            # Set stuff
+            path = path[5:]
+            # example path at this point (⁠ LED-Green/0 ⁠)
+            device, value = path.split('/')
+            if device in pins:
+                pins[device].set(float(value))  # Turn ON
+                cl.send(b"HTTP/1.0 200 OK\r\n\r\n")
+            else:
+                cl.send(b"HTTP/1.0 404 NO SUCH DEVICE\r\n\r\n")
+    elif '.' in path:
+        try:
+            with open(path, 'r') as f:
+                cl.send(f.read())
+        except:
+            cl.send(b"HTTP/1.0 404 NO SUCH FILE\r\n\r\n")
     else: # Default endpoint for HTML
         cl.send(b"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n")
         cl.send(html)
